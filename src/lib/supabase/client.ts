@@ -1,20 +1,12 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { isDemoMode, isSupabaseMode } from '../../config/app-mode'
+import { getAppMode, getSupabaseConfigError } from '../../config/app-mode'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim() ?? ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() ?? ''
 
-function createSupabase(): SupabaseClient | null {
-  if (isDemoMode) {
-    return null
-  }
+let supabase: SupabaseClient | null = null
 
-  if (isSupabaseMode && (!supabaseUrl || !supabaseAnonKey)) {
-    throw new Error(
-      'Supabase não configurado. Defina VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY para usar VITE_APP_MODE=supabase.',
-    )
-  }
-
+function createSupabase(): SupabaseClient {
   return createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,
@@ -24,14 +16,22 @@ function createSupabase(): SupabaseClient | null {
   })
 }
 
-export const supabase = createSupabase()
-
 export function getSupabaseClient(): SupabaseClient {
-  if (!supabase) {
+  if (getAppMode() === 'demo') {
     throw new Error('Supabase indisponível no modo demo.')
+  }
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(getSupabaseConfigError())
+  }
+
+  if (!supabase) {
+    supabase = createSupabase()
   }
 
   return supabase
 }
 
-export const hasSupabaseClient = Boolean(supabase)
+export function hasSupabaseClient(): boolean {
+  return Boolean(supabaseUrl && supabaseAnonKey)
+}
