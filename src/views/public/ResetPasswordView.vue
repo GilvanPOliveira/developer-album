@@ -26,12 +26,7 @@
             >
           </div>
 
-          <div
-            v-if="error"
-            class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-          >
-            {{ error }}
-          </div>
+          <UiInlineAlert :message="error" tone="error" :reserve-space="true" />
 
           <button
             type="submit"
@@ -57,12 +52,7 @@
             >
           </div>
 
-          <div
-            v-if="error"
-            class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-          >
-            {{ error }}
-          </div>
+          <UiInlineAlert :message="error" tone="error" :reserve-space="true" />
 
           <button
             type="submit"
@@ -87,6 +77,7 @@
 import { computed, onMounted, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UiContainer from '../../components/ui/UiContainer.vue'
+import UiInlineAlert from '../../components/ui/UiInlineAlert.vue'
 import { useAuth } from '../../composables/useAuth'
 
 const route = useRoute()

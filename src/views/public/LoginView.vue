@@ -46,19 +46,8 @@
               >
             </div>
 
-            <div
-              v-if="validationError"
-              class="rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-200"
-            >
-              {{ validationError }}
-            </div>
-
-            <div
-              v-if="error"
-              class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-            >
-              {{ error }}
-            </div>
+            <UiInlineAlert :message="validationError" tone="warning" :reserve-space="true" />
+            <UiInlineAlert :message="error" tone="error" :reserve-space="true" />
 
             <button
               type="submit"
@@ -81,7 +70,7 @@
               to="/register"
               class="text-cyan-300 transition hover:text-cyan-200"
             >
-              Ainda não tem conta? Criar conta
+              Ainda não tem conta? Criar conta primeiro
             </RouterLink>
           </div>
         </div>
@@ -94,6 +83,7 @@
 import { computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UiContainer from '../../components/ui/UiContainer.vue'
+import UiInlineAlert from '../../components/ui/UiInlineAlert.vue'
 import { useAuth } from '../../composables/useAuth'
 
 type LoginForm = {

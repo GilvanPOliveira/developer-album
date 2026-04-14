@@ -42,6 +42,7 @@ Consolidar conhecimentos em desenvolvimento moderno, incluindo:
 * resumo do perfil
 * métricas do GitHub
 * visualização de repositórios em destaque
+* abertura automática no modo "buscar perfil" quando não houver GitHub vinculado
 * busca e vínculo de conta GitHub no verso do card principal
 
 ###
@@ -78,6 +79,7 @@ Consolidar conhecimentos em desenvolvimento moderno, incluindo:
 
 * modo `demo`
 * modo `supabase`
+* escolha de modo diretamente na `Home`
 * armazenamento de perfil, stacks, projetos favoritos e álbum
 * sincronização de snapshots do GitHub
 
@@ -131,14 +133,26 @@ Crie o `.env`:
 VITE_SUPABASE_URL=https://SEU_PROJECT_REF.supabase.co
 VITE_SUPABASE_ANON_KEY=SUA_ANON_KEY
 VITE_GITHUB_TOKEN=SEU_TOKEN_GITHUB
-VITE_APP_MODE=supabase
+VITE_APP_MODE=both
+VITE_DEFAULT_APP_MODE=supabase
 ```
 
-Se quiser executar sem backend real, use:
+Se quiser restringir o projeto para apenas um modo, você pode usar:
 
 ```env
 VITE_APP_MODE=demo
 ```
+
+ou:
+
+```env
+VITE_APP_MODE=supabase
+```
+
+Com `VITE_APP_MODE=both`, a aplicação exibe na `Home` a escolha entre:
+
+* `Demo`: usa dados locais no navegador
+* `Supabase`: usa autenticação e persistência reais
 
 Configure o Supabase:
 
@@ -158,14 +172,15 @@ npm run dev
 
 ## Como testar
 
-1. criar conta ou acessar o modo `demo`
-2. preencher o perfil no dashboard
-3. vincular uma conta do GitHub
-4. validar métricas e repositórios em destaque
-5. acessar a página explorar e buscar perfis
-6. adicionar perfis GitHub ao álbum
-7. abrir o álbum e verificar frente e verso das figurinhas
-8. acessar a página de projetos e validar filtros e paginação
+1. abrir a `Home` e escolher entre `Demo` ou `Supabase`
+2. criar conta pela tela principal ou acessar uma conta existente
+3. entrar no dashboard e verificar se o card abre em `Buscar perfil` quando não houver GitHub vinculado
+4. vincular uma conta do GitHub
+5. validar métricas e repositórios em destaque
+6. acessar a página explorar e buscar perfis
+7. adicionar perfis GitHub ao álbum
+8. abrir o álbum e verificar frente e verso das figurinhas
+9. acessar a página de projetos e validar filtros e paginação
 
 ##
 

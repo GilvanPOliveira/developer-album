@@ -119,19 +119,19 @@
 
               <template v-else>
                 <RouterLink
-                  to="/login"
-                  class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
-                  active-class="bg-slate-900 text-white"
-                >
-                  Entrar
-                </RouterLink>
-
-                <RouterLink
                   to="/register"
                   class="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
                   active-class="bg-cyan-300 text-slate-950"
                 >
                   Criar conta
+                </RouterLink>
+
+                <RouterLink
+                  to="/login"
+                  class="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
+                  active-class="bg-slate-900 text-white"
+                >
+                  Já tenho conta
                 </RouterLink>
               </template>
             </div>
@@ -235,21 +235,21 @@
 
                 <template v-else>
                   <RouterLink
-                    to="/login"
-                    class="rounded-2xl px-4 py-3 text-center text-sm font-medium text-slate-200 transition hover:bg-slate-900 hover:text-white"
-                    active-class="bg-slate-900 text-white"
-                    @click="closeMobileMenu"
-                  >
-                    Entrar
-                  </RouterLink>
-
-                  <RouterLink
                     to="/register"
                     class="rounded-2xl bg-cyan-400 px-4 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
                     active-class="bg-cyan-300 text-slate-950"
                     @click="closeMobileMenu"
                   >
                     Criar conta
+                  </RouterLink>
+
+                  <RouterLink
+                    to="/login"
+                    class="rounded-2xl px-4 py-3 text-center text-sm font-medium text-slate-200 transition hover:bg-slate-900 hover:text-white"
+                    active-class="bg-slate-900 text-white"
+                    @click="closeMobileMenu"
+                  >
+                    Já tenho conta
                   </RouterLink>
                 </template>
               </div>

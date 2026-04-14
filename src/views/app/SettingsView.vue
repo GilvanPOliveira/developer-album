@@ -101,11 +101,8 @@
               </div>
             </div>
 
-            <div
-              v-if="passwordError"
-              class="mt-4 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-200"
-            >
-              {{ passwordError }}
+            <div class="mt-4">
+              <UiInlineAlert :message="passwordError" tone="warning" :reserve-space="true" />
             </div>
 
             <div class="mt-4 flex justify-end">
@@ -141,16 +138,7 @@
             </div>
           </div>
 
-          <div
-            v-if="profileError || authError"
-            class="space-y-3"
-          >
-            <div
-              class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-            >
-              {{ profileError || authError }}
-            </div>
-          </div>
+          <UiInlineAlert :message="profileError || authError" tone="error" />
         </div>
       </div>
     </UiContainer>
@@ -161,6 +149,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import UiContainer from '../../components/ui/UiContainer.vue'
+import UiInlineAlert from '../../components/ui/UiInlineAlert.vue'
 import UiPageIntro from '../../components/ui/UiPageIntro.vue'
 import { useAuth } from '../../composables/useAuth'
 import { useProfile } from '../../composables/useProfile'

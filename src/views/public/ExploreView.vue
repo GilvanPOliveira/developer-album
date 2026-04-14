@@ -45,19 +45,8 @@
           </div>
         </form>
 
-        <div
-          v-if="albumError"
-          class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-        >
-          {{ albumError }}
-        </div>
-
-        <div
-          v-if="albumSuccess"
-          class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200"
-        >
-          {{ albumSuccess }}
-        </div>
+        <UiInlineAlert :message="albumError" tone="error" />
+        <UiInlineAlert :message="albumSuccess" tone="success" />
 
         <div v-if="loadStatus === 'loading'" class="text-center text-white">
           Carregando...
@@ -204,12 +193,7 @@
           </p>
         </div>
 
-        <div
-          v-if="error && loadStatus === 'error'"
-          class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-        >
-          {{ error }}
-        </div>
+        <UiInlineAlert :message="error && loadStatus === 'error' ? error : null" tone="error" />
       </div>
     </UiContainer>
   </section>
@@ -218,6 +202,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import UiContainer from '../../components/ui/UiContainer.vue'
+import UiInlineAlert from '../../components/ui/UiInlineAlert.vue'
 import UiPageIntro from '../../components/ui/UiPageIntro.vue'
 import { useExplore } from '../../composables/useExplore'
 import { useAuth } from '../../composables/useAuth'

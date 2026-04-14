@@ -75,12 +75,7 @@
           @{{ profile.username }}
         </div>
 
-        <div
-          v-if="favoriteError"
-          class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-        >
-          {{ favoriteError }}
-        </div>
+        <UiInlineAlert :message="favoriteError" tone="error" />
 
         <div class="grid gap-4 xl:grid-cols-[1.1fr_380px]">
           <div class="space-y-4">
@@ -274,6 +269,7 @@
 import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import UiContainer from '../../components/ui/UiContainer.vue'
+import UiInlineAlert from '../../components/ui/UiInlineAlert.vue'
 import UiPageIntro from '../../components/ui/UiPageIntro.vue'
 import { usePublicProfileStore } from '../../stores/public-profile.store'
 import { useFavorites } from '../../composables/useFavorites'

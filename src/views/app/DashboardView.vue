@@ -60,7 +60,7 @@
                       </div>
 
                       <button type="button" class="top-action" @click="isProfileCardBack = true">
-                        Verso
+                        Buscar perfil
                       </button>
                     </div>
 
@@ -203,12 +203,7 @@
                       </button>
                     </div>
 
-                    <div
-                      v-if="githubError"
-                      class="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-                    >
-                      {{ githubError }}
-                    </div>
+                    <UiInlineAlert :message="githubError" tone="error" :reserve-space="true" />
                   </div>
                 </template>
               </div>
@@ -252,18 +247,9 @@
                     </div>
                   </form>
 
-                  <div
-                    v-if="githubSearchError"
-                    class="mt-4 rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
-                  >
-                    {{ githubSearchError }}
-                  </div>
-
-                  <div
-                    v-if="githubLinkSuccess"
-                    class="mt-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200"
-                  >
-                    {{ githubLinkSuccess }}
+                  <div class="mt-4 space-y-3">
+                    <UiInlineAlert :message="githubSearchError" tone="error" :reserve-space="true" />
+                    <UiInlineAlert :message="githubLinkSuccess" tone="success" :reserve-space="true" />
                   </div>
 
                   <div
@@ -470,6 +456,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import UiContainer from '../../components/ui/UiContainer.vue'
+import UiInlineAlert from '../../components/ui/UiInlineAlert.vue'
 import { useAuth } from '../../composables/useAuth'
 import { useProfile } from '../../composables/useProfile'
 import { useProfileStacks } from '../../composables/useProfileStacks'
@@ -508,7 +495,7 @@ const repositoryPage = ref(1)
 const repositoryPageSize = 2
 
 function syncProfileCardFromRoute() {
-  isProfileCardBack.value = route.query.github === 'link'
+  isProfileCardBack.value = route.query.github === 'link' || !githubLogin.value
 }
 
 const githubLogin = computed(() => {
@@ -642,6 +629,7 @@ onMounted(async () => {
 })
 
 watch(githubLogin, async () => {
+  syncProfileCardFromRoute()
   await loadGithubSnapshot()
 })
 
