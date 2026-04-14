@@ -1,4 +1,4 @@
-import { isDemoMode } from '../../../config/app-mode'
+import { getAppMode } from '../../../config/app-mode'
 import { demoProfilesService } from './profiles.service.demo'
 import { supabaseProfilesService } from './profiles.service.supabase'
 
@@ -44,8 +44,23 @@ export type ProfilesService = {
   updateMyProfile: (userId: string, input: UpsertProfileInput) => Promise<Profile>
 }
 
-export const profilesService: ProfilesService = isDemoMode
-  ? demoProfilesService
-  : supabaseProfilesService
+function getActiveProfilesService(): ProfilesService {
+  return getAppMode() === 'demo' ? demoProfilesService : supabaseProfilesService
+}
+
+export const profilesService: ProfilesService = {
+  getMyProfile(userId) {
+    return getActiveProfilesService().getMyProfile(userId)
+  },
+  getProfileById(profileId) {
+    return getActiveProfilesService().getProfileById(profileId)
+  },
+  createProfile(userId, input) {
+    return getActiveProfilesService().createProfile(userId, input)
+  },
+  updateMyProfile(userId, input) {
+    return getActiveProfilesService().updateMyProfile(userId, input)
+  },
+}
 
 export default profilesService

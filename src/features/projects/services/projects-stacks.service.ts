@@ -1,4 +1,4 @@
-import { isDemoMode } from '../../../config/app-mode'
+import { getAppMode } from '../../../config/app-mode'
 import { demoProjectsStacksService } from './projects-stacks.service.demo'
 import { supabaseProjectsStacksService } from './projects-stacks.service.supabase'
 
@@ -20,8 +20,17 @@ export type ProjectsStacksService = {
   saveProjectStacks: (projectId: string, items: SaveProjectStacksInput) => Promise<ProjectStackItem[]>
 }
 
-export const projectsStacksService: ProjectsStacksService = isDemoMode
-  ? demoProjectsStacksService
-  : supabaseProjectsStacksService
+function getActiveProjectsStacksService(): ProjectsStacksService {
+  return getAppMode() === 'demo' ? demoProjectsStacksService : supabaseProjectsStacksService
+}
+
+export const projectsStacksService: ProjectsStacksService = {
+  listProjectStacks(projectId) {
+    return getActiveProjectsStacksService().listProjectStacks(projectId)
+  },
+  saveProjectStacks(projectId, items) {
+    return getActiveProjectsStacksService().saveProjectStacks(projectId, items)
+  },
+}
 
 export default projectsStacksService

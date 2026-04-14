@@ -1,4 +1,4 @@
-import { isDemoMode } from '../../../config/app-mode'
+import { getAppMode } from '../../../config/app-mode'
 import { demoFavoritesService } from './favorites.service.demo'
 import { supabaseFavoritesService } from './favorites.service.supabase'
 
@@ -21,8 +21,23 @@ export type FavoritesService = {
   isFavorite: (ownerProfileId: string, targetProfileId: string) => Promise<boolean>
 }
 
-export const favoritesService: FavoritesService = isDemoMode
-  ? demoFavoritesService
-  : supabaseFavoritesService
+function getActiveFavoritesService(): FavoritesService {
+  return getAppMode() === 'demo' ? demoFavoritesService : supabaseFavoritesService
+}
+
+export const favoritesService: FavoritesService = {
+  listMyFavorites(ownerProfileId) {
+    return getActiveFavoritesService().listMyFavorites(ownerProfileId)
+  },
+  addFavorite(ownerProfileId, targetProfileId) {
+    return getActiveFavoritesService().addFavorite(ownerProfileId, targetProfileId)
+  },
+  removeFavorite(ownerProfileId, targetProfileId) {
+    return getActiveFavoritesService().removeFavorite(ownerProfileId, targetProfileId)
+  },
+  isFavorite(ownerProfileId, targetProfileId) {
+    return getActiveFavoritesService().isFavorite(ownerProfileId, targetProfileId)
+  },
+}
 
 export default favoritesService

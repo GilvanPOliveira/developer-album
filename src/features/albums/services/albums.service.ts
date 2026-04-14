@@ -1,4 +1,4 @@
-import { isDemoMode } from '../../../config/app-mode'
+import { getAppMode } from '../../../config/app-mode'
 import type { GithubUser } from '../../../types/domain'
 import { demoAlbumsService } from './albums.service.demo'
 import { supabaseAlbumsService } from './albums.service.supabase'
@@ -71,6 +71,44 @@ export type AlbumsService = {
   isGithubUserInAlbum?: (albumId: string, githubUserId: number) => Promise<boolean>
 }
 
-export const albumsService: AlbumsService = isDemoMode ? demoAlbumsService : supabaseAlbumsService
+function getActiveAlbumsService(): AlbumsService {
+  return getAppMode() === 'demo' ? demoAlbumsService : supabaseAlbumsService
+}
+
+export const albumsService: AlbumsService = {
+  listMyAlbums(ownerProfileId) {
+    return getActiveAlbumsService().listMyAlbums(ownerProfileId)
+  },
+  getDefaultAlbum(ownerProfileId) {
+    return getActiveAlbumsService().getDefaultAlbum(ownerProfileId)
+  },
+  createAlbum(ownerProfileId, input) {
+    return getActiveAlbumsService().createAlbum(ownerProfileId, input)
+  },
+  updateAlbum(albumId, ownerProfileId, input) {
+    return getActiveAlbumsService().updateAlbum(albumId, ownerProfileId, input)
+  },
+  deleteAlbum(albumId, ownerProfileId) {
+    return getActiveAlbumsService().deleteAlbum(albumId, ownerProfileId)
+  },
+  addProfileToAlbum(albumId, ownerProfileId, collectedProfileId) {
+    return getActiveAlbumsService().addProfileToAlbum(albumId, ownerProfileId, collectedProfileId)
+  },
+  removeProfileFromAlbum(albumId, ownerProfileId, collectedProfileId) {
+    return getActiveAlbumsService().removeProfileFromAlbum(albumId, ownerProfileId, collectedProfileId)
+  },
+  isProfileInAlbum(albumId, collectedProfileId) {
+    return getActiveAlbumsService().isProfileInAlbum(albumId, collectedProfileId)
+  },
+  addGithubUserToAlbum(albumId, ownerProfileId, githubUser) {
+    return getActiveAlbumsService().addGithubUserToAlbum!(albumId, ownerProfileId, githubUser)
+  },
+  removeGithubUserFromAlbum(albumId, ownerProfileId, githubUserId) {
+    return getActiveAlbumsService().removeGithubUserFromAlbum!(albumId, ownerProfileId, githubUserId)
+  },
+  isGithubUserInAlbum(albumId, githubUserId) {
+    return getActiveAlbumsService().isGithubUserInAlbum!(albumId, githubUserId)
+  },
+}
 
 export default albumsService

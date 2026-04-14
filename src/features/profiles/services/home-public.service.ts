@@ -1,4 +1,4 @@
-import { isDemoMode } from '../../../config/app-mode'
+import { getAppMode } from '../../../config/app-mode'
 import { demoHomePublicService } from './home-public.service.demo'
 import { supabaseHomePublicService } from './home-public.service.supabase'
 import type { Profile } from './profiles.service'
@@ -37,8 +37,14 @@ export function mapProfileToHomeCard(profile: Profile, primaryStacks: string[] =
   }
 }
 
-export const homePublicService: HomePublicService = isDemoMode
-  ? demoHomePublicService
-  : supabaseHomePublicService
+function getActiveHomePublicService(): HomePublicService {
+  return getAppMode() === 'demo' ? demoHomePublicService : supabaseHomePublicService
+}
+
+export const homePublicService: HomePublicService = {
+  getHomePublicData() {
+    return getActiveHomePublicService().getHomePublicData()
+  },
+}
 
 export default homePublicService

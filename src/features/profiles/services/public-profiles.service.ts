@@ -1,4 +1,4 @@
-import { isDemoMode } from '../../../config/app-mode'
+import { getAppMode } from '../../../config/app-mode'
 import { demoPublicProfilesService } from './public-profiles.service.demo'
 import { supabasePublicProfilesService } from './public-profiles.service.supabase'
 
@@ -31,8 +31,14 @@ export type PublicProfilesService = {
   listPublicProfiles: (query?: PublicProfilesQuery) => Promise<PublicProfilesResult>
 }
 
-export const publicProfilesService: PublicProfilesService = isDemoMode
-  ? demoPublicProfilesService
-  : supabasePublicProfilesService
+function getActivePublicProfilesService(): PublicProfilesService {
+  return getAppMode() === 'demo' ? demoPublicProfilesService : supabasePublicProfilesService
+}
+
+export const publicProfilesService: PublicProfilesService = {
+  listPublicProfiles(query) {
+    return getActivePublicProfilesService().listPublicProfiles(query)
+  },
+}
 
 export default publicProfilesService

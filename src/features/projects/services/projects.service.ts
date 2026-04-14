@@ -1,4 +1,4 @@
-import { isDemoMode } from '../../../config/app-mode'
+import { getAppMode } from '../../../config/app-mode'
 import { demoProjectsService } from './projects.service.demo'
 import { supabaseProjectsService } from './projects.service.supabase'
 
@@ -39,8 +39,29 @@ export type ProjectsService = {
   deleteProject: (projectId: string, profileId: string) => Promise<void>
 }
 
-export const projectsService: ProjectsService = isDemoMode
-  ? demoProjectsService
-  : supabaseProjectsService
+function getActiveProjectsService(): ProjectsService {
+  return getAppMode() === 'demo' ? demoProjectsService : supabaseProjectsService
+}
+
+export const projectsService: ProjectsService = {
+  listMyProjects(profileId) {
+    return getActiveProjectsService().listMyProjects(profileId)
+  },
+  listPublicProjectsByProfileId(profileId) {
+    return getActiveProjectsService().listPublicProjectsByProfileId(profileId)
+  },
+  getProjectById(projectId) {
+    return getActiveProjectsService().getProjectById(projectId)
+  },
+  createProject(profileId, input) {
+    return getActiveProjectsService().createProject(profileId, input)
+  },
+  updateProject(projectId, profileId, input) {
+    return getActiveProjectsService().updateProject(projectId, profileId, input)
+  },
+  deleteProject(projectId, profileId) {
+    return getActiveProjectsService().deleteProject(projectId, profileId)
+  },
+}
 
 export default projectsService
