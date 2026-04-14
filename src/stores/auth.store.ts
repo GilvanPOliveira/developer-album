@@ -1,5 +1,6 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import { appModeState } from '../config/app-mode'
 import { authService, type AuthUser, type SignInInput, type SignUpInput } from '../features/auth/services/auth.service'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -10,34 +11,55 @@ export const useAuthStore = defineStore('auth', () => {
   const error = ref<string | null>(null)
 
   let unsubscribeAuthListener: (() => void) | null = null
+  let bootstrapToken = 0
 
   const isAuthenticated = computed(() => Boolean(user.value))
   const userId = computed(() => user.value?.id ?? null)
   const userEmail = computed(() => user.value?.email ?? null)
+
+  function clearAuthListener(): void {
+    unsubscribeAuthListener?.()
+    unsubscribeAuthListener = null
+  }
+
+  function setupAuthListener(): void {
+    clearAuthListener()
+    unsubscribeAuthListener = authService.onAuthStateChange((payload) => {
+      user.value = payload.user
+    })
+  }
 
   async function bootstrap(): Promise<void> {
     if (isBootstrapping.value) {
       return
     }
 
+    const currentToken = ++bootstrapToken
+
     isBootstrapping.value = true
     error.value = null
 
     try {
       const result = await authService.bootstrap()
-      user.value = result.user
 
-      if (!unsubscribeAuthListener) {
-        unsubscribeAuthListener = authService.onAuthStateChange((payload) => {
-          user.value = payload.user
-        })
+      if (currentToken !== bootstrapToken) {
+        return
       }
+
+      user.value = result.user
+      setupAuthListener()
     } catch (err) {
+      if (currentToken !== bootstrapToken) {
+        return
+      }
+
       error.value = err instanceof Error ? err.message : 'Falha ao inicializar autenticação.'
       user.value = null
     } finally {
-      isBootstrapping.value = false
-      isBootstrapped.value = true
+      if (currentToken === bootstrapToken) {
+        isBootstrapping.value = false
+        isBootstrapped.value = true
+      }
     }
   }
 
@@ -48,6 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const result = await authService.signIn(payload)
       user.value = result.user
+      setupAuthListener()
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Falha ao entrar.'
       throw err
@@ -63,6 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const result = await authService.signUp(payload)
       user.value = result.user
+      setupAuthListener()
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Falha ao criar conta.'
       throw err
@@ -117,6 +141,16 @@ export const useAuthStore = defineStore('auth', () => {
   function clearError(): void {
     error.value = null
   }
+
+  watch(appModeState, () => {
+    bootstrapToken += 1
+    clearAuthListener()
+    user.value = null
+    error.value = null
+    isBootstrapped.value = false
+    isBootstrapping.value = false
+    void bootstrap()
+  })
 
   return {
     user,
